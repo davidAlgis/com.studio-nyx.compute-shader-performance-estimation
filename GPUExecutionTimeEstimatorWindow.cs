@@ -602,6 +602,12 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
     /// </summary>
     private void DisplayLog(List<List<HierarchyItemFrameData>> capturedFramesData)
     {
+        if (capturedFramesData == null)
+        {
+            Debug.LogError("Unable to display null log");
+            return;
+        }
+
         foreach (List<HierarchyItemFrameData> frameData in capturedFramesData)
         {
             foreach (HierarchyItemFrameData item in frameData)
