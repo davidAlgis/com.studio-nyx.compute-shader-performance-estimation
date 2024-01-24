@@ -505,6 +505,8 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
     /// <returns>A list with line containing the path and name above</returns>
     private List<HierarchyItemFrameData> ProcessHierarchyFrameData(int frame, string linePath, string lineName)
     {
+        string linePathNotNull = linePath == null ? "" : linePath;
+        string lineNameNotNull = lineName == null ? "" : lineName;
         List<HierarchyItemFrameData> f = new();
 
         using HierarchyFrameDataView frameData = ProfilerDriver.GetHierarchyFrameDataView(frame, 0,
@@ -521,8 +523,9 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
                 string itemPath = frameData.GetItemPath(child);
                 string itemName = frameData.GetItemName(child);
 
-                if (itemPath.Contains(linePath) &&
-                    itemName.Contains(lineName))
+                if(linePath != null )
+                if (itemPath.Contains(linePathNotNull) &&
+                    itemName.Contains(lineNameNotNull))
                 {
                     HierarchyItemFrameData h = new()
                     {
