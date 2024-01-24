@@ -242,7 +242,7 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
 
         if (string.IsNullOrEmpty(_linePath))
         {
-            EditorUtility.DisplayDialog("Error", "Line name of profiler cannot be empty", "OK");
+            EditorUtility.DisplayDialog("Error", "Line path of profiler cannot be empty", "OK");
             return;
         }
 
