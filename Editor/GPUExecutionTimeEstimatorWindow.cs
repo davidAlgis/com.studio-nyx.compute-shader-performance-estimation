@@ -10,7 +10,7 @@ using Debug = UnityEngine.Debug;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-public class GPUExecutionTimeEstimatorWindow : EditorWindow
+public class ComputeShaderPerformanceEstimationWindow : EditorWindow
 {
     private class HierarchyItemFrameData
     {
@@ -100,10 +100,10 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
 
     private bool _isFirstFrame;
 
-    [MenuItem("Tools/GPU Execution Time Estimator")]
+    [MenuItem("Tools/Compute Shader Performance Estimation")]
     public static void ShowWindow()
     {
-        GetWindow<GPUExecutionTimeEstimatorWindow>("GPU Execution Time Estimator");
+        GetWindow<ComputeShaderPerformanceEstimationWindow>("Compute Shader Performance Estimation");
     }
 
     private void OnGUI()
