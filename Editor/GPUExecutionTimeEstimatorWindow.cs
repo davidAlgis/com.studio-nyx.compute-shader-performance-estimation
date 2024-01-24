@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Unity.Mathematics;
 using UnityEditor;
 using UnityEditor.Profiling;
 using UnityEditorInternal;
@@ -455,7 +454,7 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
         // We save only the _frameCount last frame (and not the first one) to get the more accurate, the first 
         // could be not the one that wanted to save and moreover in gpu time estimation the first frame are always
         // less accurate than the first one. 
-        int first = math.max(ProfilerDriver.lastFrameIndex - _frameCount, ProfilerDriver.firstFrameIndex);
+        int first = Mathf.Max(ProfilerDriver.lastFrameIndex - _frameCount, ProfilerDriver.firstFrameIndex);
         int last = ProfilerDriver.lastFrameIndex;
         int nbrFrameSaved = last - first;
         if (nbrFrameSaved == 0)
@@ -591,7 +590,7 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
     {
         // After collecting data, calculate average and variance
         float average = _executionTimes.Average();
-        float variance = _executionTimes.Sum(time => math.pow(time - average, 2)) / _executionTimes.Count;
+        float variance = _executionTimes.Sum(time => Mathf.Pow(time - average, 2)) / _executionTimes.Count;
 
         Debug.Log($"Average Time: {average} ms, Variance: {variance} ms");
         LastDataToCsv();
