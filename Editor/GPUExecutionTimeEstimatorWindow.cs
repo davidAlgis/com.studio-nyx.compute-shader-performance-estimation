@@ -39,13 +39,13 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
     private int _frameCount;
 
     // The string associated to the input field of frame count
-    private string _frameCountStr = "10";
+    private string _frameCountStr = "50";
 
     // For time estimation it corresponds to the number of sample you want to evaluate your time.
     private int _totalNbrSample;
 
     // The string associated to the input field of total number of sample
-    private string _totalNbrSampleStr = "100";
+    private string _totalNbrSampleStr = "200";
 
     // Count the number of frame
     private int _currentFrame;
@@ -76,21 +76,21 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
     // the string associated to the input field
     private string _maxUsedMemory = _DefaultMaxUsedMemory.ToString();
 
-    // The button display log will show only line that contains the following path
-    private string _linePathContains;
-
     // Csv folder where the data will be exported
     private string _csvPathName = "C:\\estimation.csv";
 
     // If true will export data to a csv a _csvPath
     private bool _exportCsv;
 
+    // The button display log will show only line that contains the following path
+    private string _linePathContains;
+
     // The button display log will show only line that contains the following name.
     // For example if you are looking for kernel execution you should use : UnityEngine.CoreModule.dll!UnityEngine::ComputeShader.Dispatch()
     // You can use the find name functions to search for the correct name line.
     // Warning do not use ComputeShader.Dispatch() it seems that it's associated to the children line of
     // the kernel execution and therefore its duration is 0 ms.
-    private string _lineNameContains;
+    private string _lineNameContains = "UnityEngine.CoreModule.dll!UnityEngine::ComputeShader.Dispatch()";
 
     // Check if the class is already processing ! 
     private bool _isProcessing;
@@ -387,7 +387,10 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
             EditorApplication.update -= UpdateDisplayLog;
             List<List<HierarchyItemFrameData>> capturedFramesData =
                 ProcessLogProfiler(_linePathContains, _lineNameContains);
-            DisplayLog(capturedFramesData);
+            if(capturedFramesData != null)
+            {
+                DisplayLog(capturedFramesData);
+            }
             _isProcessing = false;
         }
     }
@@ -457,15 +460,6 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
         int first = Mathf.Max(ProfilerDriver.lastFrameIndex - _frameCount, ProfilerDriver.firstFrameIndex);
         int last = ProfilerDriver.lastFrameIndex;
         int nbrFrameSaved = last - first;
-        if (nbrFrameSaved == 0)
-        {
-            Debug.Log("No frame was saved, please increase the frame count.");
-        }
-
-        if (nbrFrameSaved != _frameCount)
-        {
-            Debug.Log("Log has saved a different number of saved frame. It can be noon accurate.");
-        }
 
         for (int i = first; i < last; i++)
         {
@@ -494,7 +488,7 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
 
         if (capturedFramesData == null || capturedFramesData.Count < 1)
         {
-            Debug.Log(
+            Debug.LogError(
                 "No item found with these path/name... <b>Maybe click on the profiler or open it if you didn't !</b>");
             return null;
         }
@@ -593,7 +587,10 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
         float variance = _executionTimes.Sum(time => Mathf.Pow(time - average, 2)) / _executionTimes.Count;
 
         Debug.Log($"Average Time: {average} ms, Variance: {variance} ms");
-        LastDataToCsv();
+        if(_exportCsv)
+        {
+            LastDataToCsv();
+        }
     }
 
     /// <summary>
@@ -620,14 +617,21 @@ public class GPUExecutionTimeEstimatorWindow : EditorWindow
     private void LastDataToCsv()
     {
         int length = _executionTimes.Count;
-
-        using StreamWriter file = new(_csvPathName);
-        for (int i = 0; i < length; i++)
+        try
         {
-            file.Write(i + "; " + _executionTimes[i].ToString(CultureInfo.InvariantCulture));
-            file.Write(Environment.NewLine);
-        }
+            using StreamWriter file = new(_csvPathName);
+            for (int i = 0; i < length; i++)
+            {
+                file.Write(i + "; " + _executionTimes[i].ToString(CultureInfo.InvariantCulture));
+                file.Write(Environment.NewLine);
+            }
 
-        Debug.Log("Saved data at <a file=\"" + _csvPathName + "\">" + _csvPathName + "</a>");
+            Debug.Log("Saved data at <a file=\"" + _csvPathName + "\">" + _csvPathName + "</a>");
+        }
+        catch (Exception ex)
+        {
+            // Catch any exceptions during file writing
+            Debug.LogError("Error occurred while saving data to CSV: " + ex.Message);
+        }
     }
 }
