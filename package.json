@@ -1,0 +1,19 @@
+{
+    "keywords": [
+        "GPU",
+        "Compute Shader",
+        "Time Estimation",
+        "Profiling"
+    ],
+    "license": "MIT",
+    "displayName": "Compute Shader Performance Estimation",
+    "name": "com.studio-nyx.compute-shader-performance-estimation",
+    "description": "Tool for estimating the execution time of a compute shader in Unity using profiler.",
+    "version": "0.0.5",
+    "author": {
+        "email": "david.algis@tutamail.com",
+        "url": "https://github.com/davidAlgis",
+        "name": "David Algis"
+    },
+    "unity": "2021.3"
+}
